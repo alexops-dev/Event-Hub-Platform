@@ -41,3 +41,27 @@ The goal of this project is to build a scalable, cloud-native application that d
 
 ## 📌 Status
 Work in progress — actively evolving architecture and features.
+
+Milestone 1
+    Design schema and sample JSON for 5 events
+
+Milestone 2
+    Rust scraper for list page
+
+Milestone 3
+    Rust scraper for detail page
+
+Milestone 4
+    Store events in Postgres
+
+Milestone 5
+    Expose /events API
+
+Milestone 6
+    React UI with filters
+
+Milestone 7
+    Docker Compose
+
+Milestone 8
+    Kubernetes later
