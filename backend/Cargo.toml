@@ -1,0 +1,10 @@
+[package]
+name = "backend"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+axum = "0.8" # in Python: Flask / FastAPI
+tokio = { version = "1", features = ["full"] } # Rust async runtime: the engine that runs asynchronous tasks like
+serde = { version = "1", features = ["derive"] } # Serialization/deserialization Json <-> struct
+serde_json = "1"
