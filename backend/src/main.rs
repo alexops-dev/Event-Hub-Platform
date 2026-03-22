@@ -37,29 +37,6 @@ async fn health() -> Json<HealthResponse> {
     })
 }
 
-// this is the program entry point
-// Tokio should set up the async runtime
-#[tokio::main]
-async fn main() {
-    let app = Router::new()
-        .route("/", get(root))
-        .route("/health", get(health));
-
-    // Later, for Docker/Kubernetes, will be changed to 0.0.0.0:3000.
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    println!("Server running on http://{}", addr);
-
-    // This binds the port and starts serving requests.
-    let listener = tokio::net::TcpListener::bind(addr)
-        .await
-        .expect("Failed to bind TCP listener"); // expect(...) means:
-                                                // if something fails, crash with this message.
-
-    axum::serve(listener, app)
-        .await
-        .expect("Server failed");
-}
-
 async fn get_events() -> Json<Vec<Event>> {
     let events = vec![
         Event {
@@ -99,3 +76,29 @@ async fn get_events() -> Json<Vec<Event>> {
 
     Json(events)
 }
+
+
+// this is the program entry point
+// Tokio should set up the async runtime
+#[tokio::main]
+async fn main() {
+    let app = Router::new()
+        .route("/", get(root))
+        .route("/health", get(health))
+        .route("/events", get(get_events));
+
+    // Later, for Docker/Kubernetes, will be changed to 0.0.0.0:3000.
+    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    println!("Server running on http://{}", addr);
+
+    // This binds the port and starts serving requests.
+    let listener = tokio::net::TcpListener::bind(addr)
+        .await
+        .expect("Failed to bind TCP listener"); // expect(...) means:
+                                                // if something fails, crash with this message.
+
+    axum::serve(listener, app)
+        .await
+        .expect("Server failed");
+}
+
