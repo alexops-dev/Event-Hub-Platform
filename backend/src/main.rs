@@ -13,11 +13,12 @@ struct HealthResponse {
     status: String, // An owned, growable heap-allocated string. struct owns its data
 }
 
+// This defines the shape of one event.
 #[derive(Serialize)]
 struct Event {
     id: u32,
     title: String,
-    categories: Vec<String>,
+    categories: Vec<String>, // Vec<T> means: a growable list of values of type T
     venue_name: String,
     district: String,
     starts_at: String,
@@ -38,6 +39,7 @@ async fn health() -> Json<HealthResponse> {
 }
 
 async fn get_events() -> Json<Vec<Event>> {
+    // Creating the list with vec![]
     let events = vec![
         Event {
             id: 1,
@@ -65,6 +67,20 @@ async fn get_events() -> Json<Vec<Event>> {
             categories: vec![
                 "Kinder, Jugendliche".to_string(),
                 "Lesungen, Vorträge".to_string(),
+            ],
+            venue_name: "Ingeborg-Drewitz-Bibliothek".to_string(),
+            district: "Steglitz-Zehlendorf".to_string(),
+            starts_at: "2026-03-29T10:00:00+01:00".to_string(),
+            ends_at: "2026-03-29T12:00:00+01:00".to_string(),
+            source_name: "berlin.de".to_string(),
+        },
+        // one event is intentionally not child-related to test the filter
+        Event {
+            id: 3,
+            title: "Mietberatung in der Bibliothek".to_string(),
+            categories: vec![
+                "Politik, Bürgerservice".to_string(),
+                "Infoveranstaltungen".to_string(),
             ],
             venue_name: "Ingeborg-Drewitz-Bibliothek".to_string(),
             district: "Steglitz-Zehlendorf".to_string(),
