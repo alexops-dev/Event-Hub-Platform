@@ -1,26 +1,24 @@
 # .github/dependabot.yml
 #
-# Purpose:
-# - Keep dependency updates predictable and quiet.
-# - Group security updates into fewer PRs.
-# - Group normal version updates by ecosystem.
-# - Use only the default "dependencies" label, so this file works in any repo.
+# Dependabot configuration for this repository.
 #
-# Adjust per repository:
-# - Keep only ecosystems that exist in the repo.
-# - Change directories to real paths, e.g. "/frontend/app", "/backend", "/infra".
-# - Remove directory patterns that do not exist if Dependabot complains.
+# This repo currently contains:
+# - Rust backend under /backend with Cargo.toml and Cargo.lock
+# - GitHub Actions workflows under /.github/workflows
 #
-# Important:
-# - This file must be located at .github/dependabot.yml
-# - It is NOT a GitHub Actions workflow.
-# - groups + applies-to: security-updates groups vulnerable dependency updates.
-# - cooldown delays normal version updates, not urgent security grouping behavior.
+# Removed:
+# - npm, because there is no frontend/package.json
+# - pip, because there is no requirements.txt / pyproject.toml
+# - terraform, because there are no .tf files
+#
+# Security grouping:
+# - groups + applies-to: security-updates creates fewer grouped security PRs.
+# - cooldown delays normal version updates, not security updates.
 
 version: 2
 
 updates:
-  # GitHub Actions: updates actions/checkout, setup-node, Trivy action, etc.
+  # GitHub Actions dependencies
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -49,51 +47,9 @@ updates:
       include: "scope"
     open-pull-requests-limit: 2
 
-  # Terraform: providers and modules
-  - package-ecosystem: "terraform"
-    directories:
-      - "/"
-      - "/terraform"
-      - "/infra"
-      - "/infrastructure"
-      - "/modules/*"
-      - "/environments/*"
-      - "/envs/*"
-    schedule:
-      interval: "monthly"
-      day: "monday"
-      time: "06:30"
-      timezone: "Europe/Berlin"
-    cooldown:
-      default-days: 14
-    groups:
-      terraform-security:
-        applies-to: security-updates
-        patterns: ["*"]
-      terraform-minor-patch:
-        applies-to: version-updates
-        patterns: ["*"]
-        update-types: ["minor", "patch"]
-        group-by: dependency-name
-      terraform-major:
-        applies-to: version-updates
-        patterns: ["*"]
-        update-types: ["major"]
-        group-by: dependency-name
-    labels:
-      - "dependencies"
-    commit-message:
-      prefix: "dependabot(terraform)"
-      include: "scope"
-    open-pull-requests-limit: 3
-
-  # Frontend: npm / Angular / React / Vue / Node projects
-  - package-ecosystem: "npm"
-    directories:
-      - "/frontend"
-      - "/frontend/*"
-      - "/apps/*"
-      - "/packages/*"
+  # Rust backend dependencies
+  - package-ecosystem: "cargo"
+    directory: "/backend"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -102,21 +58,15 @@ updates:
     cooldown:
       default-days: 7
     groups:
-      npm-security:
+      cargo-security:
         applies-to: security-updates
         patterns: ["*"]
-      angular-security:
-        applies-to: security-updates
-        patterns:
-          - "@angular*"
-          - "rxjs"
-          - "zone.js"
-      npm-minor-patch:
+      cargo-minor-patch:
         applies-to: version-updates
         patterns: ["*"]
         update-types: ["minor", "patch"]
         group-by: dependency-name
-      npm-major:
+      cargo-major:
         applies-to: version-updates
         patterns: ["*"]
         update-types: ["major"]
@@ -124,77 +74,6 @@ updates:
     labels:
       - "dependencies"
     commit-message:
-      prefix: "dependabot(npm)"
+      prefix: "dependabot(cargo)"
       include: "scope"
     open-pull-requests-limit: 3
-
-  # Backend: Python / pip
-  - package-ecosystem: "pip"
-    directories:
-      - "/backend"
-      - "/api"
-      - "/services/*"
-      - "/lambda/*"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "07:30"
-      timezone: "Europe/Berlin"
-    cooldown:
-      default-days: 7
-    groups:
-      pip-security:
-        applies-to: security-updates
-        patterns: ["*"]
-      pip-minor-patch:
-        applies-to: version-updates
-        patterns: ["*"]
-        update-types: ["minor", "patch"]
-        group-by: dependency-name
-      pip-major:
-        applies-to: version-updates
-        patterns: ["*"]
-        update-types: ["major"]
-        group-by: dependency-name
-    labels:
-      - "dependencies"
-    commit-message:
-      prefix: "dependabot(pip)"
-      include: "scope"
-    open-pull-requests-limit: 3
-
-  # Docker: base images in Dockerfiles
-  - package-ecosystem: "docker"
-    directories:
-      - "/"
-      - "/backend"
-      - "/frontend"
-      - "/docker"
-      - "/services/*"
-    schedule:
-      interval: "monthly"
-      day: "monday"
-      time: "08:00"
-      timezone: "Europe/Berlin"
-    cooldown:
-      default-days: 14
-    groups:
-      docker-security:
-        applies-to: security-updates
-        patterns: ["*"]
-      docker-minor-patch:
-        applies-to: version-updates
-        patterns: ["*"]
-        update-types: ["minor", "patch"]
-        group-by: dependency-name
-      docker-major:
-        applies-to: version-updates
-        patterns: ["*"]
-        update-types: ["major"]
-        group-by: dependency-name
-    labels:
-      - "dependencies"
-    commit-message:
-      prefix: "dependabot(docker)"
-      include: "scope"
-    open-pull-requests-limit: 2
